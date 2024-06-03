@@ -1,13 +1,22 @@
-import { Router } from "express";
+import { json, Router } from "express";
+import { chatwootEventMap } from "../../mappers/chatwoot/index.js";
+import { typeBotInstance } from "../../factories/typebot.factory.js";
+import { typebotEventMap, typeBotMessagesMap } from "../../mappers/typebot/index.js";
 
 const router = Router();
 
-router.get("/", (req, res) => {
-  res.send("This can be post");
-})
+router.post("/", async (req, res, next) => {
+  const data = req.body;
+  const mappedData = chatwootEventMap(data);
 
-router.post("/", (req, res, next) => {
-  console.log("body",JSON.stringify(req.body));
+  const typeBotSession = await typeBotInstance.createSession()
+
+  const typeBotEventMapped = typebotEventMap(typeBotSession)
+  const messagesMapped = typeBotMessagesMap(typeBotSession.messages)
+
+  console.log("typeBotEventMapped", typeBotEventMapped)
+  console.log("messagesMapped", messagesMapped)
+
 
   res.status(200).json({
     success: true,
