@@ -6,8 +6,8 @@ export const TypeBotConfig = {
 };
 
 export const pocketConfig = {
-  userPassword: process.env.USER_PASS_PK,
-  user: process.env.USER_PK,
+  password: process.env.USER_PASS_PB,
+  user: process.env.USER_PB,
   url: process.env.POCKETBASE_URL,
 };
 

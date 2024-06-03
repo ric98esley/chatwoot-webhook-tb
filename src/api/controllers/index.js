@@ -1,0 +1,1 @@
+export { chatwootWebhookController } from './chatwoot/chatwoot-webhook.controller.js'

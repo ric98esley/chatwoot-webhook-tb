@@ -3,8 +3,7 @@
 * This file contains the mapping functions for the Chatwoot events
 * @param {Object} data - The data object from the Chatwoot event
 */
-export const chatwootEventMap = (data) => {
-  console.log(JSON.stringify(data))
+export const chatwootEventMap = async (data) => {
   return {
     id: data.id,
     event: data.event,
