@@ -16,7 +16,7 @@ export const apiConfig = {
   version: process.env.API_VERSION,
 };
 
-export const chatwoot = {
+export const chatwootConfig = {
   url: process.env.CHATWOOT_URL,
   token: process.env.CHATWOOT_BOT_TOKEN,
   ACCOUNT_ID: process.env.CHATWOOT_ACCOUNT_ID,
