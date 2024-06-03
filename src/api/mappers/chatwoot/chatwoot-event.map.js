@@ -4,27 +4,27 @@
 * @param {Object} data - The data object from the Chatwoot event
 */
 export const chatwootEventMap = (data) => {
-  console.log(data)
+  console.log(JSON.stringify(data))
   return {
     id: data.id,
     event: data.event,
     messageType: data.message_type,
     account: {
-      id: data.account.id,
-      name: data.account.name,
+      id: data.account?.id,
+      name: data.account?.name,
     },
     sender: {
-      id: data.sender.id,
-      name: data.sender.name,
-      email: data.sender.email,
-      phoneNumber: data.sender.phone_number,
-      agentCode: data.sender.custom_attributes?.codigo_agencia
+      id: data.sender?.id ?? data.meta?.sender?.id,
+      name: data.sender?.name ?? data.meta?.sender?.name,
+      email: data.sender?.email ?? data.meta?.sender?.email,
+      phoneNumber: data.sender?.phone_number ?? data.meta?.sender?.phone_number,
+      agentCode: data.sender?.custom_attributes?.codigo_agencia ?? data.meta?.sender.custom_attributes?.codigo_agencia,
     },
     conversation: {
-      id: data.conversation.id,
+      id: data.conversation?.id ?? data.id,
       contentType: data.content_type,
       content: data.content,
-      inboxId: data.conversation.inbox_id,
+      inboxId: data.conversation?.inbox_id,
       attachments: data.attachments?.map((attachment) => (
         {
           id: attachment.id,
