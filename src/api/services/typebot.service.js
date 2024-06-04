@@ -1,4 +1,7 @@
-import { typebotEventMap, typeBotMessagesMap } from '../mappers/typebot/index.js';
+import {
+  typebotEventMap,
+  typeBotMessagesMap,
+} from '../mappers/typebot/index.js';
 
 export class TypeBot {
   url;
@@ -8,7 +11,7 @@ export class TypeBot {
     this.flow = config.flow;
   }
   async startChat() {
-    return fetch(`${this.url}/${this.flow}/startChat`, {
+    return fetch(`${this.url}/typebots/${this.flow}/startChat`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -24,7 +27,8 @@ export class TypeBot {
   }
 
   async continueChat(sessionId, message) {
-    return fetch(`${this.url}/sessions/${sessionId}/continueChat`, {
+    const url = `${this.url}/sessions/${sessionId}/continueChat`;
+    return fetch(url, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -33,8 +37,13 @@ export class TypeBot {
         message,
       }),
     })
-      .then((res) => {
-        return res.json();
+      .then(async (res) => {
+        const typebot = await res.json();
+        if (res.status > 400) {
+          return await this.startChat();
+        }
+        const messages = typeBotMessagesMap(typebot.messages);
+        return { messages };
       })
       .catch((err) => console.error(err));
   }

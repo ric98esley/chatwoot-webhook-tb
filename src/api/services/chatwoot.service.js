@@ -4,29 +4,39 @@ export class Chatwoot {
     this.token = config.token;
   }
 
-  async sendMessages(messages = [], account, conversationId) {
+  async sendMessages({
+    messages = [],
+    account,
+    conversationId,
+    messageType = 'outgoing',
+  }) {
     const url = `${this.url}/api/v1/accounts/${account}/conversations/${conversationId}/messages`;
-    messages.forEach(async (message) => {
-      if(message.type !== 'text') {
-        await this.sendMedia(message, url);
+    for (let message of messages) {
+      if (message.type !== 'text') {
+        await this.sendMedia(message, url, messageType);
       }
-      await this.sendMessage(message, url);
-    })
+      if (message.type === 'text') {
+        await this.sendMessage(message, url, messageType);
+      }
+    }
   }
 
-  async sendMedia(media, url) {
+  async sendMedia(media, url, messageType) {
+    // Primero, obtenemos el archivo como un Blob
+    const response = await fetch(media.content);
+    const blob = await response.blob();
+
+    const formData = new FormData();
+    formData.append('attachments[]', blob);
+    formData.append('message_type', messageType);
+    formData.append('file_type', media.type);
+
     return fetch(url, {
       method: 'POST',
       headers: {
-        'Content-Type': 'multipart/form-data',
-        'Api-Token': this.token,
+        api_access_token: this.token,
       },
-      body: JSON.stringify({
-        attachments: media.content,
-        message_type: 'outgoing',
-        content: 'archivo',
-        file_type: media.type,
-      }),
+      body: formData,
     })
       .then((res) => {
         return res.json();
@@ -34,22 +44,21 @@ export class Chatwoot {
       .catch((err) => console.error(err));
   }
 
-  async sendMessage(message, url) {
+  async sendMessage(message, url, messageType) {
     return fetch(url, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        'Api-Token': this.token,
+        api_access_token: this.token,
       },
       body: JSON.stringify({
         content: message.content,
-        message_type: 'outgoing',
+        message_type: messageType,
       }),
     })
       .then((res) => {
         return res.json();
       })
       .catch((err) => console.error(err));
-
   }
 }

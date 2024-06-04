@@ -9,7 +9,7 @@ export const chatwootEventMap = async (data) => {
     event: data.event,
     messageType: data.message_type,
     account: {
-      id: data.account?.id,
+      id: data.account?.id ?? data?.messages[0]?.account_id,
       name: data.account?.name,
     },
     sender: {

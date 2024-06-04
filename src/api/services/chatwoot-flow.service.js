@@ -22,7 +22,6 @@ export class ChatwootFlow {
         status: 'started',
       })
       .then((flow) => {
-        console.log('created', flow);
         return flow;
       })
       .catch((error) => {
@@ -38,7 +37,6 @@ export class ChatwootFlow {
         session_id: sessionId,
       })
       .then((flow) => {
-        console.log('update', flow);
         return flow;
       })
       .catch((error) => {

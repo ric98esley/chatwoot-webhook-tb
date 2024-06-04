@@ -1,5 +1,4 @@
-import { Chatwoot } from "../services/chatwoot.service";
-import { chatwootConfig} from '../../config.js';
-const chatwoot = new Chatwoot(
-  chatwootConfig
-);
+import { Chatwoot } from '../services/chatwoot.service.js';
+import { chatwootConfig } from '../../config.js';
+
+export const chatwoot = new Chatwoot(chatwootConfig);
