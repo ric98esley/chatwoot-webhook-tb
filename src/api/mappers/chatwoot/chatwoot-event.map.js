@@ -20,6 +20,7 @@ export const chatwootEventMap = async (data) => {
       agentCode: data.sender?.custom_attributes?.codigo_agencia ?? data.meta?.sender.custom_attributes?.codigo_agencia,
     },
     conversation: {
+      status: data.conversation?.status ?? data.status,
       id: data.conversation?.id ?? data.id,
       contentType: data.content_type,
       content: data.content,

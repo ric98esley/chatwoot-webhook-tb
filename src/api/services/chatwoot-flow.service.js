@@ -30,11 +30,12 @@ export class ChatwootFlow {
       });
   }
 
-  async updateChatwootFlowSession(flowId, sessionId) {
+  async updateChatwootFlowSession(flowId, sessionId, status) {
     return pb
       .collection('chatwoot_flow')
       .update(flowId, {
-        session_id: sessionId,
+        ...(sessionId && { session_id: sessionId }),
+        ...(status && { status: status })
       })
       .then((flow) => {
         return flow;
@@ -45,7 +46,7 @@ export class ChatwootFlow {
       });
   }
 
-  async upsertChatwootFlowSession(conversationId, sessionId, status) {
+  async upsertChatwootFlowSession({conversationId, sessionId, status}) {
     try {
       if (!statusValues.includes(status)) {
         return null;
@@ -53,7 +54,7 @@ export class ChatwootFlow {
       const flow = await this.findChatwootFlowSession(conversationId);
 
       if (flow) {
-        const updatedFlow = await this.updateChatwootFlowSession(flow.id, sessionId);
+        const updatedFlow = await this.updateChatwootFlowSession(flow.id, sessionId, status);
         return updatedFlow
       }
       const createdFlow = await this.createChatwootFlowSession(conversationId, sessionId);

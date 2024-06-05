@@ -1,15 +1,28 @@
+const extractFromChildren = (children, messages) => {
+  children.forEach((child) => {
+    if (child.type === 'p') {
+      extractFromChildren(child.children, messages);
+    }
+    if (child.type === 'variable') {
+      extractFromChildren(child.children, messages);
+    }
+    if(child.text) {
+      messages.push({
+        type: 'text',
+        content: child.text,
+      });
+    }
+  });
+}
+
+
 export const typeBotMessagesMap = (messagesData) => {
   const messages = [];
 
   if (messagesData) {
     messagesData.forEach((message) => {
       if (message.type === 'text') {
-        message.content?.richText.forEach((content) => {
-          messages.push({
-            type: 'text',
-            content: content.children[0].text,
-          });
-        });
+        extractFromChildren(message.content.richText, messages);
       }
       if (message.type === 'image') {
         messages.push({

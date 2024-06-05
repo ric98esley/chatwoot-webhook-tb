@@ -1,9 +1,10 @@
-import { json, Router } from "express";
-import { chatwootWebhookController } from "../../controllers/index.js";
+import { Router } from "express";
+import { changeStatusController, chatwootWebhookController } from "../../controllers/index.js";
 
 const router = Router();
 
 router.post("/", chatwootWebhookController)
+router.put("/change-status", changeStatusController)
 
 
 export default router;

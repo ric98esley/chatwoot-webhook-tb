@@ -7,54 +7,61 @@ export const chatwootWebhookController = (req, res, next) => {
   const body = req.body;
   chatwootEventMap(body)
     .then(async (data) => {
-      console.log('data', data);
       const flow = await chatwootFlow.findChatwootFlowSession(
         data.conversation.id
       );
+
+      // End the chat session when the conversation is resolved
       if (data.event === 'conversation_resolved') {
-        await chatwootFlow.upsertChatwootFlowSession(
-          data.conversation.id,
-          null,
-          'stopped'
-        );
+        await chatwootFlow.upsertChatwootFlowSession({
+          conversationId: data.conversation?.id,
+          sessionId: null,
+          status: 'stopped',
+        });
       }
 
+      // Send the bot response when the user writes a message
       if (data.messageType === 'incoming' && data.event === 'message_created') {
-        if (!flow || flow.status == 'stopped') {
-          const typeBotSession = await typeBotInstance.startChat();
-          await chatwootFlow.upsertChatwootFlowSession(
-            data.conversation.id,
-            typeBotSession.typebot.sessionId,
-            'started'
-          );
-
-          chatwoot.sendMessages({
-            messages: typeBotSession.messages,
-            account: data.account.id,
-            conversationId: data.conversation.id,
-          });
-        }
+        let messagesToSend = [];
+        let requiredNewSession = false;
 
         if (flow && flow.status == 'started') {
-          const { messages, typebot } = await typeBotInstance.continueChat(
+          const { messages, error } = await typeBotInstance.continueChat(
             flow.session_id,
             data.conversation.content
           );
-
-          if (typebot) {
-            await chatwootFlow.upsertChatwootFlowSession(
-              data.conversation.id,
-              typebot.sessionId,
-              'started'
-            );
+          if (error) {
+            requiredNewSession = true;
+          } else {
+            messagesToSend = messages;
           }
+        }
 
-          chatwoot.sendMessages({
-            messages: messages,
-            account: data.account.id,
+        if (!flow || flow.status == 'stopped' || requiredNewSession) {
+          // Set of variables will be prefilled in the typebot
+          const prefilledVariables = {
+            name: data.sender.name,
+            email: data.sender.email,
+            userPhone: data.sender.phoneNumber,
             conversationId: data.conversation.id,
+            accountId: data.account.id,
+          };
+          const { messages, typebot } = await typeBotInstance.startChat(
+            prefilledVariables
+          );
+          messagesToSend = messages;
+          await chatwootFlow.upsertChatwootFlowSession({
+            conversationId: data.conversation.id,
+            sessionId: typebot.sessionId,
+            status: 'started',
           });
         }
+
+        chatwoot.sendMessages({
+          messages: messagesToSend,
+          account: data.account.id,
+          conversationId: data.conversation.id,
+        });
       }
 
       res.status(200).json({

@@ -61,4 +61,22 @@ export class Chatwoot {
       })
       .catch((err) => console.error(err));
   }
+
+  async changeStatus(conversationId, status, account) {
+    const url = `${this.url}/api/v1/accounts/${account}/conversations/${conversationId}/toggle_status`;
+    return fetch(url, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        api_access_token: this.token,
+      },
+      body: JSON.stringify({
+        status,
+      }),
+    })
+      .then((res) => {
+        return res.json();
+      })
+      .catch((err) => console.error(err));
+  }
 }

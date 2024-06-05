@@ -10,12 +10,13 @@ export class TypeBot {
     this.url = config.url;
     this.flow = config.flow;
   }
-  async startChat() {
+  async startChat(prefilledVariables = {}) {
     return fetch(`${this.url}/typebots/${this.flow}/startChat`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
       },
+      body: JSON.stringify({ prefilledVariables }),
     })
       .then(async (res) => {
         const typebot = await res.json();
@@ -40,7 +41,7 @@ export class TypeBot {
       .then(async (res) => {
         const typebot = await res.json();
         if (res.status > 400) {
-          return await this.startChat();
+          return { error: typebot.code, messages: [] };
         }
         const messages = typeBotMessagesMap(typebot.messages);
         return { messages };
