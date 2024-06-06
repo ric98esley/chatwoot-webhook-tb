@@ -79,4 +79,24 @@ export class Chatwoot {
       })
       .catch((err) => console.error(err));
   }
+
+  async assignTo({ conversationId, agentId, teamId, account }) {
+    const url = `${this.url}/api/v1/accounts/${account}/conversations/${conversationId}/assignments`;
+    return fetch(url, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        api_access_token: this.token,
+      },
+      body: JSON.stringify({
+        assignee_id: agentId,
+        team_id: teamId,
+      }),
+    }).then((res) => {
+      if (res.status > 400) {
+        return { message: 'fail to assign the conversation ' };
+      }
+      return { message: 'Conversation Successfully assigned ' };
+    });
+  }
 }
