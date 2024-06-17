@@ -17,7 +17,8 @@ export const chatwootEventMap = async (data) => {
       name: data.sender?.name ?? data.meta?.sender?.name,
       email: data.sender?.email ?? data.meta?.sender?.email,
       phoneNumber: data.sender?.phone_number ?? data.meta?.sender?.phone_number,
-      agentCode: data.sender?.custom_attributes?.codigo_agencia ?? data.meta?.sender.custom_attributes?.codigo_agencia,
+      agentCode: data.sender?.custom_attributes?.agencia ?? data.meta?.sender.custom_attributes?.agencia,
+      rustDeskCode: data.sender?.custom_attributes?.codigo_rustdesk ?? data.meta?.sender.custom_attributes?.codigo_rustdesk,
     },
     conversation: {
       status: data.conversation?.status ?? data.status,

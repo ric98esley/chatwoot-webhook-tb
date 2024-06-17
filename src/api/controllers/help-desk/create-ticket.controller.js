@@ -1,6 +1,6 @@
-import { ticketService } from '../../factories';
+import { ticketService } from '../../factories/index.js';
 
-export const assignToController = async (req, res, next) => {
+export const createTicketController = async (req, res, next) => {
   try {
     const ticket = await ticketService.createdTicket(req.body);
     res.status(202).json(ticket);

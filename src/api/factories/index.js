@@ -1,3 +1,1 @@
-import { ticketService } from './ticket.factory';
-
-export { ticketService };
+export { ticketService } from './ticket.factory.js';

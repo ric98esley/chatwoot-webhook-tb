@@ -1,7 +1,7 @@
 import pb from '../../libs/pocket.connect.js';
 
 export class Tickets {
-  async mapTicket(pbTicket) {
+  async mapTicketToEntity(pbTicket) {
     return {
       id: pbTicket.response.id,
       customerName: pbTicket.response.customer_name,
@@ -18,7 +18,22 @@ export class Tickets {
       createdAt: pbTicket.response.created,
     };
   }
-  async createdTicket() {
+
+  async mapTicketToDTO(pbTicket) {
+    return {
+      id: pbTicket.response.id,
+      customer_name: pbTicket.response.customerName,
+      phone: pbTicket.response.phone,
+      created_by: pbTicket.response.createdBy,
+      assigned_to: pbTicket.response.assignedTo,
+      status: pbTicket.response.status,
+      agent_code: pbTicket.response.agentCode,
+      conversation_id: pbTicket.response.conversationId,
+      sender_id: pbTicket.response.senderId,
+    };
+  }
+
+  async createdTicket(data) {
     const record = await pb.collection('tickets').create(data);
     return this.mapTicket(record);
   }
