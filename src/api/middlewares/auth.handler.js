@@ -1,6 +1,6 @@
-import { authConfig } from "../../config";
+import { authConfig } from "../../config.js";
 
-export function authHandler(err, req, res, next) {
+export function authHandler(req, res, next) {
   try {
     const apiToken = req.headers['api-key'];
     if (apiToken && apiToken === authConfig.authToken) {
