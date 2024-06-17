@@ -1,40 +1,54 @@
 import pb from '../../libs/pocket.connect.js';
+import { removeEmpty } from '../../utils/remove-empty.util.js';
 
 export class Tickets {
-  async mapTicketToEntity(pbTicket) {
+  mapTicketToEntity(pbTicket) {
     return {
-      id: pbTicket.response.id,
-      customerName: pbTicket.response.customer_name,
-      phone: pbTicket.response.phone,
-      createdBy: pbTicket.response.created_by,
-      assignedTo: pbTicket.response.assigned_to,
-      status: pbTicket.response.status,
-      agentCode: pbTicket.response.agent_code,
-      conversationId: pbTicket.response.conversation_id,
-      senderId: pbTicket.response.sender_id,
-      isClosed: pbTicket.response.is_closed,
-      closedAt: pbTicket.response.closed_at,
-      updatedAt: pbTicket.response.updated,
-      createdAt: pbTicket.response.created,
+      id: pbTicket.id,
+      customerName: pbTicket.customer_name,
+      phone: pbTicket.phone,
+      createdBy: pbTicket.created_by,
+      assignedTo: pbTicket.assigned_to,
+      status: pbTicket.status,
+      agentCode: pbTicket.agent_code,
+      conversationId: pbTicket.conversation_id,
+      senderId: pbTicket.sender_id,
+      isClosed: pbTicket.is_closed,
+      closedAt: pbTicket.closed_at,
+      updatedAt: pbTicket.updated,
+      createdAt: pbTicket.created,
     };
   }
 
-  async mapTicketToDTO(pbTicket) {
+  mapTicketToDTO(data) {
     return {
-      id: pbTicket.response.id,
-      customer_name: pbTicket.response.customerName,
-      phone: pbTicket.response.phone,
-      created_by: pbTicket.response.createdBy,
-      assigned_to: pbTicket.response.assignedTo,
-      status: pbTicket.response.status,
-      agent_code: pbTicket.response.agentCode,
-      conversation_id: pbTicket.response.conversationId,
-      sender_id: pbTicket.response.senderId,
+      customer_name: data.customerName,
+      phone: data.phone,
+      created_by: data.createdBy,
+      assigned_to: data.assignedTo,
+      status: data.status,
+      agent_code: data.agentCode,
+      conversation_id: data.conversationId,
+      sender_id: data.senderId,
     };
   }
 
   async createdTicket(data) {
-    const record = await pb.collection('tickets').create(data);
-    return this.mapTicket(record);
+    const ticket = this.mapTicketToDTO(data);
+    ticket.created_by = pb.authStore.model.id;
+
+    const record = await pb.collection('tickets').create(removeEmpty(ticket));
+    return this.mapTicketToEntity(record);
+  }
+
+  async createThread(ticketId, content) {
+    const thread = {
+      ticket_id: ticketId,
+      content: 'El cliente comenta que: ' + content,
+      created_by: pb.authStore.model.id,
+    };
+
+    const record = await pb.collection('ticket_thread').create(removeEmpty(thread));
+    return record;
   }
 }
