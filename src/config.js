@@ -21,3 +21,7 @@ export const chatwootConfig = {
   token: process.env.CHATWOOT_BOT_TOKEN,
   ACCOUNT_ID: process.env.CHATWOOT_ACCOUNT_ID,
 };
+
+export const authConfig = {
+  authToken: process.env.AUTH_TOKEN,
+};
