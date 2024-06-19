@@ -1,4 +1,3 @@
-import { authConfig } from '../../../config.js';
 import { ticketService } from '../../factories/index.js';
 
 export const createTicketController = async (req, res, next) => {

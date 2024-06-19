@@ -8,7 +8,6 @@ export const changeStatusController = (req, res, next) => {
     botStatus,
     crmStatus = 'open',
   } = req.body;
-  console.log('changeStatusController', req.body);
   chatwootFlow
     .upsertChatwootFlowSession({ conversationId, sessionId: null, status: botStatus })
     .then(async (flow) => {

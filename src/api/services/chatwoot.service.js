@@ -22,44 +22,45 @@ export class Chatwoot {
   }
 
   async sendMedia(media, url, messageType) {
-    // Primero, obtenemos el archivo como un Blob
-    const response = await fetch(media.content);
-    const blob = await response.blob();
+    try {
+      const response = await fetch(media.content);
+      const blob = await response.blob();
 
-    const formData = new FormData();
-    formData.append('attachments[]', blob);
-    formData.append('message_type', messageType);
-    formData.append('file_type', media.type);
+      const formData = new FormData();
+      formData.append('attachments[]', blob);
+      formData.append('message_type', messageType);
+      formData.append('file_type', media.type);
 
-    return fetch(url, {
-      method: 'POST',
-      headers: {
-        api_access_token: this.token,
-      },
-      body: formData,
-    })
-      .then((res) => {
-        return res.json();
-      })
-      .catch((err) => console.error(err));
+      const res = await fetch(url, {
+        method: 'POST',
+        headers: {
+          api_access_token: this.token,
+        },
+        body: formData,
+      });
+      return await res.json();
+    } catch (err) {
+      console.error(err);
+    }
   }
 
   async sendMessage(message, url, messageType) {
-    return fetch(url, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        api_access_token: this.token,
-      },
-      body: JSON.stringify({
-        content: message.content,
-        message_type: messageType,
-      }),
-    })
-      .then((res) => {
-        return res.json();
-      })
-      .catch((err) => console.error(err));
+    try {
+      const response = await fetch(url, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          api_access_token: this.token,
+        },
+        body: JSON.stringify({
+          content: message.content,
+          message_type: messageType,
+        }),
+      });
+      return await response.json();
+    } catch (err) {
+      console.error(err);
+    }
   }
 
   async changeStatus(conversationId, status, account) {

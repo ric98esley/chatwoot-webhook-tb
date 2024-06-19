@@ -43,10 +43,12 @@ export const chatwootWebhookController = async (req, res, next) => {
           email: data.sender.email,
           userPhone: data.sender.phoneNumber,
           conversationId: data.conversation.id,
+          senderId: data.sender.id,
           accountId: data.account.id,
           agentCode: data.sender.agentCode ?? null,
           rustDeskCode: data.sender.rustDeskCode ?? null,
         };
+
         const { messages, typebot } = await typeBotInstance.startChat(prefilledVariables);
         messagesToSend = messages;
         await chatwootFlow.upsertChatwootFlowSession({
