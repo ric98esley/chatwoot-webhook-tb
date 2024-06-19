@@ -3,6 +3,7 @@
 export { chatwootWebhookController } from './chatwoot/chatwoot-webhook.controller.js'
 export { changeStatusController } from './chatwoot/change-status.controller.js'
 export { assignToController } from './chatwoot/assign-to.controller.js'
+export { addCustomToContactController } from './chatwoot/add-custom-to-contact.controller.js'
 
 
 // helpdesk controllers

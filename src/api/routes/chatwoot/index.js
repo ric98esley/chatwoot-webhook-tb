@@ -1,5 +1,6 @@
 import { Router } from 'express';
 import {
+  addCustomToContactController,
   assignToController,
   changeStatusController,
   chatwootWebhookController,
@@ -11,5 +12,6 @@ const router = Router();
 router.post('/', chatwootWebhookController);
 router.put('/change-status', authHandler, changeStatusController);
 router.post('/assign-to', authHandler, assignToController);
+router.post('/add-attributes', authHandler, addCustomToContactController);
 
 export default router;

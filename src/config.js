@@ -19,6 +19,7 @@ export const apiConfig = {
 export const chatwootConfig = {
   url: process.env.CHATWOOT_URL,
   token: process.env.CHATWOOT_BOT_TOKEN,
+  adminToken: process.env.CHATWOOT_ADMIN_TOKEN,
   ACCOUNT_ID: process.env.CHATWOOT_ACCOUNT_ID,
 };
 

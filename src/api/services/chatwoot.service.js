@@ -2,6 +2,7 @@ export class Chatwoot {
   constructor(config) {
     this.url = config.url;
     this.token = config.token;
+    this.adminToken = config.adminToken;
   }
 
   async sendMessages({
@@ -98,6 +99,26 @@ export class Chatwoot {
         return { message: 'fail to assign the conversation ' };
       }
       return { message: 'Conversation Successfully assigned ' };
+    });
+  }
+
+  async addAttributeToContact({ senderId, customAttributes, account }) {
+    const url = `${this.url}/api/v1/accounts/${account}/contacts/${senderId}`;
+
+    return fetch(url, {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json',
+        api_access_token: this.adminToken,
+      },
+      body: JSON.stringify({
+        custom_attributes: customAttributes,
+      }),
+    }).then(async (res) => {
+      if (res.status > 400) {
+        return { message: 'fail to add attribute to the contact ' };
+      }
+      return { message: 'Attribute Successfully added to the contact ' };
     });
   }
 }
