@@ -21,7 +21,7 @@ export class Chatwoot {
       }
       // delay between messages necessary to avoid rate limiting
       // this can be adjusted based on the rate limit of the chatwoot instance
-      await new Promise(resolve => setTimeout(resolve, 110));
+      await new Promise((resolve) => setTimeout(resolve, 110));
     }
   }
 
@@ -105,7 +105,7 @@ export class Chatwoot {
     });
   }
 
-  async addAttributeToContact({ senderId, customAttributes, account }) {
+  async addAttributeToContact({ senderId, account, customAttributes, name }) {
     const url = `${this.url}/api/v1/accounts/${account}/contacts/${senderId}`;
 
     return fetch(url, {
@@ -115,7 +115,8 @@ export class Chatwoot {
         api_access_token: this.adminToken,
       },
       body: JSON.stringify({
-        custom_attributes: customAttributes,
+        ...(name && { name }),
+        ...(customAttributes && { custom_attributes: customAttributes }),
       }),
     }).then(async (res) => {
       if (res.status > 400) {
