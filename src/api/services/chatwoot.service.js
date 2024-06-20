@@ -19,6 +19,9 @@ export class Chatwoot {
       if (message.type === 'text') {
         await this.sendMessage(message, url, messageType);
       }
+      // delay between messages necessary to avoid rate limiting
+      // this can be adjusted based on the rate limit of the chatwoot instance
+      await new Promise(resolve => setTimeout(resolve, 110));
     }
   }
 
