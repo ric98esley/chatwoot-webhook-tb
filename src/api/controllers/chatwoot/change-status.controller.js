@@ -4,7 +4,6 @@ import { chatwoot } from '../../factories/chatwoot.factory.js';
 export const changeStatusController = async (req, res, next) => {
   const { accountId, conversationId, botStatus, crmStatus = 'open' } = req.body;
   try {
-    console.log(req.body)
     const flow = await chatwootFlow.upsertChatwootFlowSession({
       conversationId,
       sessionId: null,
