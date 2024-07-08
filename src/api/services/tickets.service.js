@@ -43,7 +43,7 @@ export class Tickets {
 
   async createThread(ticketId, content) {
     const thread = {
-      ticket_id: ticketId,
+      ticket: ticketId,
       content: '<b>El cliente comenta que: </b>' + content,
       created_by: pb.authStore.model.id,
     };
