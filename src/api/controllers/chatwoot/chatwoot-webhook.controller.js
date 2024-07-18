@@ -47,6 +47,8 @@ export const chatwootWebhookController = async (req, res, next) => {
           accountId: data.account.id,
           agentCode: data.sender.agentCode ?? null,
           rustDeskCode: data.sender.rustDeskCode ?? null,
+          cedula: data.sender.cedula ?? null,
+          address: data.sender.address ?? null,
         };
 
         const { messages, typebot } = await typeBotInstance.startChat(prefilledVariables);
@@ -58,7 +60,7 @@ export const chatwootWebhookController = async (req, res, next) => {
         });
       }
 
-      chatwoot.sendMessages({
+      await chatwoot.sendMessages({
         messages: messagesToSend,
         account: data.account.id,
         conversationId: data.conversation.id,

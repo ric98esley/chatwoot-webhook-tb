@@ -105,7 +105,7 @@ export class Chatwoot {
     });
   }
 
-  async addAttributeToContact({ senderId, account, customAttributes, name }) {
+  async addAttributeToContact({ senderId, account, customAttributes, name, email }) {
     const url = `${this.url}/api/v1/accounts/${account}/contacts/${senderId}`;
 
     return fetch(url, {
@@ -115,6 +115,7 @@ export class Chatwoot {
         api_access_token: this.adminToken,
       },
       body: JSON.stringify({
+        ...(email && { email }),
         ...(name && { name }),
         ...(customAttributes && { custom_attributes: customAttributes }),
       }),
