@@ -46,6 +46,7 @@ export class Chatwoot {
       formData.append('attachments[]', blob);
       formData.append('message_type', messageType);
       formData.append('file_type', media.type);
+      formData.append('content', media.content);
 
       const res = await fetch(url, {
         method: 'POST',
