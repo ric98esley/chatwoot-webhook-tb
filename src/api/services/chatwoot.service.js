@@ -1,3 +1,11 @@
+function containsURL(str) {
+  const urlPattern = new RegExp(
+    /((http|https):\/\/)?(www\.)?[a-zA-Z0-9-]+\.[a-zA-Z]{2,}([\/\w\.-]*)*\/?/g
+  );
+
+  return urlPattern.test(str);
+}
+
 export class Chatwoot {
   constructor(config) {
     this.url = config.url;
@@ -13,15 +21,19 @@ export class Chatwoot {
   }) {
     const url = `${this.url}/api/v1/accounts/${account}/conversations/${conversationId}/messages`;
     for (let message of messages) {
+      let delay = 300;
       if (message.type !== 'text') {
         await this.sendMedia(message, url, messageType);
       }
       if (message.type === 'text') {
         await this.sendMessage(message, url, messageType);
       }
+      if (containsURL(message.content)) {
+        delay = 4000;
+      }
       // delay between messages necessary to avoid rate limiting
       // this can be adjusted based on the rate limit of the chatwoot instance
-      await new Promise((resolve) => setTimeout(resolve, 110));
+      await new Promise((resolve) => setTimeout(resolve, delay));
     }
   }
 
@@ -105,8 +117,8 @@ export class Chatwoot {
     });
   }
 
-  async addAttributeToContact({ senderId, account, customAttributes, name, email }) {
-    const url = `${this.url}/api/v1/accounts/${account}/contacts/${senderId}`;
+  async addAttributeToContact({ senderId, accountId, customAttributes, name, email }) {
+    const url = `${this.url}/api/v1/accounts/${accountId}/contacts/${senderId}`;
 
     return fetch(url, {
       method: 'PUT',
