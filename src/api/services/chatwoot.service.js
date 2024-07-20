@@ -5,6 +5,11 @@ function containsURL(str) {
 
   return urlPattern.test(str);
 }
+function timeDelay(texto) {
+  const timeForKey = 20;
+  const timeForDelay = texto.length * timeForKey;
+  return Math.max(timeForDelay, 300);
+}
 
 export class Chatwoot {
   constructor(config) {
@@ -21,7 +26,7 @@ export class Chatwoot {
   }) {
     const url = `${this.url}/api/v1/accounts/${account}/conversations/${conversationId}/messages`;
     for (let message of messages) {
-      let delay = 300;
+      let delay = timeDelay(message.content || '');
       if (message.type !== 'text') {
         await this.sendMedia(message, url, messageType);
       }
@@ -29,8 +34,9 @@ export class Chatwoot {
         await this.sendMessage(message, url, messageType);
       }
       if (containsURL(message.content)) {
-        delay = 4000;
+        delay = delay * 10;
       }
+
       // delay between messages necessary to avoid rate limiting
       // this can be adjusted based on the rate limit of the chatwoot instance
       await new Promise((resolve) => setTimeout(resolve, delay));
@@ -42,11 +48,14 @@ export class Chatwoot {
       const response = await fetch(media.content);
       const blob = await response.blob();
 
+      const fileName = media.content.split('/').pop();
+      const type = blob.type.split('/')[1];
+
       const formData = new FormData();
-      formData.append('attachments[]', blob);
+      formData.append('attachments[]', blob, `${fileName}.${type}`);
       formData.append('message_type', messageType);
       formData.append('file_type', media.type);
-      formData.append('content', media.content);
+      formData.append('content', '');
 
       const res = await fetch(url, {
         method: 'POST',
@@ -118,7 +127,13 @@ export class Chatwoot {
     });
   }
 
-  async addAttributeToContact({ senderId, accountId, customAttributes, name, email }) {
+  async addAttributeToContact({
+    senderId,
+    accountId,
+    customAttributes,
+    name,
+    email,
+  }) {
     const url = `${this.url}/api/v1/accounts/${accountId}/contacts/${senderId}`;
 
     return fetch(url, {
