@@ -27,19 +27,19 @@ export class Chatwoot {
     const url = `${this.url}/api/v1/accounts/${account}/conversations/${conversationId}/messages`;
     for (let message of messages) {
       let delay = timeDelay(message.content || '');
+      if (containsURL(message.content)) {
+        delay = delay * 10;
+      }
+      // delay between messages necessary to avoid rate limiting
+      // this can be adjusted based on the rate limit of the chatwoot instance
+      await new Promise((resolve) => setTimeout(resolve, delay));
+
       if (message.type !== 'text') {
         await this.sendMedia(message, url, messageType);
       }
       if (message.type === 'text') {
         await this.sendMessage(message, url, messageType);
       }
-      if (containsURL(message.content)) {
-        delay = delay * 10;
-      }
-
-      // delay between messages necessary to avoid rate limiting
-      // this can be adjusted based on the rate limit of the chatwoot instance
-      await new Promise((resolve) => setTimeout(resolve, delay));
     }
   }
 
