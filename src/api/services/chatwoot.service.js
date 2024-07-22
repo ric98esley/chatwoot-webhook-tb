@@ -96,8 +96,8 @@ export class Chatwoot {
     }
   }
 
-  async changeStatus(conversationId, status, account) {
-    const url = `${this.url}/api/v1/accounts/${account}/conversations/${conversationId}/toggle_status`;
+  async changeStatus(conversationId, status, accountId) {
+    const url = `${this.url}/api/v1/accounts/${accountId}/conversations/${conversationId}/toggle_status`;
     return fetch(url, {
       method: 'POST',
       headers: {
@@ -114,8 +114,8 @@ export class Chatwoot {
       .catch((err) => console.error(err));
   }
 
-  async assignTo({ conversationId, agentId, teamId, account }) {
-    const url = `${this.url}/api/v1/accounts/${account}/conversations/${conversationId}/assignments`;
+  async assignTo({ conversationId, agentId, teamId, accountId }) {
+    const url = `${this.url}/api/v1/accounts/${accountId}/conversations/${conversationId}/assignments`;
     return fetch(url, {
       method: 'POST',
       headers: {
