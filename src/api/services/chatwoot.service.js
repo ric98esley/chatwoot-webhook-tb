@@ -38,8 +38,8 @@ export class Chatwoot {
       if (containsURL(message.content)) {
         delay = delay * 10;
 
-        if (delay > 15000) {
-          delay = 15000;
+        if (delay > 10000) {
+          delay = 10000;
         }
       }
       // delay between messages necessary to avoid rate limiting
