@@ -32,7 +32,7 @@ export class Chatwoot {
         await this.sendMedia(message, url, messageType);
       }
       if (message.type === 'text') {
-        await this.sendMessage(message, url, messageType);
+        await this.sendMessage(message, url, messageType, message.private ?? false);
       }
 
       if (containsURL(message.content)) {
@@ -48,7 +48,7 @@ export class Chatwoot {
     }
   }
 
-  async sendMedia(media, url, messageType) {
+  async sendMedia(media, url, messageType, isPrivate = false) {
     try {
       const response = await fetch(media.content);
       const blob = await response.blob();
@@ -61,6 +61,7 @@ export class Chatwoot {
       formData.append('message_type', messageType);
       formData.append('file_type', media.type);
       formData.append('content', '');
+      formData.append('private', isPrivate);
 
       const res = await fetch(url, {
         method: 'POST',
@@ -75,7 +76,7 @@ export class Chatwoot {
     }
   }
 
-  async sendMessage(message, url, messageType) {
+  async sendMessage(message, url, messageType, isPrivate = false) {
     try {
       const response = await fetch(url, {
         method: 'POST',
@@ -84,6 +85,7 @@ export class Chatwoot {
           api_access_token: this.token,
         },
         body: JSON.stringify({
+          private: isPrivate,
           content: message.content,
           message_type: messageType,
         }),
