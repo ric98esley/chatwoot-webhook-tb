@@ -3,6 +3,8 @@ import { typeBotInstance } from '../../factories/typebot.factory.js';
 import { chatwootFlow } from '../../factories/chatwoot-flow.factory.js';
 import { chatwoot } from '../../factories/chatwoot.factory.js';
 
+const pendingConversations = new Set(); // Set to keep track of pending conversations
+
 export const chatwootWebhookController = async (req, res, next) => {
   try {
     const body = req.body;
@@ -17,10 +19,21 @@ export const chatwootWebhookController = async (req, res, next) => {
         sessionId: null,
         status: 'stopped',
       });
+      pendingConversations.delete(data.conversation.id); // Remove from pending set
     }
 
     // Send the bot response when the user writes a message
     if (data.messageType === 'incoming' && data.event === 'message_created') {
+      // Check if there's a pending response
+      if (pendingConversations.has(data.conversation.id)) {
+        return res.status(200).json({
+          success: false,
+          message: 'There is already a pending response for this conversation',
+        });
+      }
+
+      pendingConversations.add(data.conversation.id); // Add to pending set
+
       let messagesToSend = [];
       let requiredNewSession = false;
 
@@ -65,6 +78,8 @@ export const chatwootWebhookController = async (req, res, next) => {
         account: data.account.id,
         conversationId: data.conversation.id,
       });
+
+      pendingConversations.delete(data.conversation.id); // Remove from pending set once the message is sent
     }
 
     res.status(200).json({
