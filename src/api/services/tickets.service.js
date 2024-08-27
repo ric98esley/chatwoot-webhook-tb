@@ -27,6 +27,8 @@ export class Tickets {
       createdBy: data.createdBy,
       assignedTo: data.assignedTo,
       status: data.status,
+      content: data.content,
+      department: data.department,
       agentCode: data.agentCode,
       conversationId: data.conversationId,
       senderId: data.senderId,
