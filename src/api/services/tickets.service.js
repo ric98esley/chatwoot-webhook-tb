@@ -7,7 +7,7 @@ export class Tickets {
       id: pbTicket.id,
       customerName: pbTicket.customer_name,
       phone: pbTicket.phone,
-      createdBy: pbTicket.created_by,
+      createdBy: pbTicket.createdBy,
       assignedTo: pbTicket.assigned_to,
       status: pbTicket.status,
       agentCode: pbTicket.agent_code,
@@ -22,20 +22,21 @@ export class Tickets {
 
   mapTicketToDTO(data) {
     return {
-      customer_name: data.customerName,
+      customerName: data.customerName,
       phone: data.phone,
-      created_by: data.createdBy,
-      assigned_to: data.assignedTo,
+      createdBy: data.createdBy,
+      assignedTo: data.assignedTo,
       status: data.status,
-      agent_code: data.agentCode,
-      conversation_id: data.conversationId,
-      sender_id: data.senderId,
+      agentCode: data.agentCode,
+      conversationId: data.conversationId,
+      senderId: data.senderId,
     };
   }
 
   async createdTicket(data) {
     const ticket = this.mapTicketToDTO(data);
-    ticket.created_by = pb.authStore.model.id;
+
+    ticket.createdBy = pb.authStore.model.id;
 
     const record = await pb.collection('tickets').create(removeEmpty(ticket));
     return this.mapTicketToEntity(record);
@@ -45,7 +46,7 @@ export class Tickets {
     const thread = {
       ticket: ticketId,
       content: '<b>El cliente comenta que: </b>' + content,
-      created_by: pb.authStore.model.id,
+      createdBy: pb.authStore.model.id,
     };
 
     const record = await pb.collection('ticket_thread').create(removeEmpty(thread));
