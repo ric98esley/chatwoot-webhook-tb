@@ -32,7 +32,8 @@ export class Chatwoot {
         await this.sendMedia(message, url, messageType);
       }
       if (message.type === 'text') {
-        await this.sendMessage(message, url, messageType, message.private ?? false);
+        const rest = await this.sendMessage(message, url, messageType, message.private ?? false);
+        console.log(rest)
       }
 
       if (containsURL(message.content)) {
@@ -90,6 +91,7 @@ export class Chatwoot {
           message_type: messageType,
         }),
       });
+
       return await response.json();
     } catch (err) {
       console.error(err);
